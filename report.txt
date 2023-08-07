@@ -1,0 +1,2 @@
+Number of images: 10
+Number of images processed: 10
