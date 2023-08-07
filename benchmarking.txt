@@ -1,5 +1,6 @@
 =================================================
-Elapsed time without threading: 46.80 seconds
-Elapsed time with threading: 33.26 seconds
-Speedup percentage: 28.92%
+Number of files: 9
+Elapsed time without threading: 29.44 seconds
+Elapsed time with threading: 23.25 seconds
+Speedup percentage: 21.02%
 =================================================
