@@ -10,6 +10,7 @@ import numpy as np
 from natsort import natsorted
 import concurrent.futures
 import argparse
+import shutil
 
 matplotlib.use('Agg')
 
@@ -65,7 +66,7 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
         else:
             y_predv = torch.cat([y_predv, tmp], axis=0)
 
-    # ini warna (r,g,b)
+    # RGB
     cp = {
         0: [1.0, 1.0, 1.0],
         1: [0.6901961, 0.9019608, 0.05098039],
@@ -82,7 +83,7 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
         12: [0.9019608, 0.7137255, 0.08627451],
     }
 
-    # pewarnaan disini
+    # Color mapping
     def map_clr(mask):
         res = []
         for row in mask:
@@ -91,9 +92,7 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
         return np.array(res)
 
     n = 4
-
     np.random.seed(76)
-
     vl_idx = np.random.choice(range(n_data_valid), n)
 
     # img size
@@ -102,19 +101,19 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
     fig.set_figwidth(2)
     fig.set_figheight(5)
 
-    # this for disabling the bg
+    # Disable bg
     ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0])
     ax.set_axis_off()
     fig.add_axes(ax)
 
-    # depan
+    # Front
     # plt.subplot(2, n*2, (2*i)+1)
     ax.imshow(X_valid[vl_idx[i]][0].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][0].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_front}/{img_front}")
     print(f"Saved to {dst_front}/{img_front}")
 
-    # belakang
+    # Back
     # plt.subplot(2, n*2, (2*i)+2)
     ax.imshow(X_valid[vl_idx[i]][1].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][1].argmax(axis=0).numpy()), alpha=0.5)
@@ -124,7 +123,7 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
     # Delete the figure after saving to save memory
     plt.close(fig)
 
-def main(threading):
+def main(threads, max_threads=4):
     print("=================================================")
     print("INFERENCING STARTED")
 
@@ -145,17 +144,26 @@ def main(threading):
     dst_front = src_front.replace("preprocessed", "processed") if "preprocessed" in src_front else f"{src_front}_processed"
     dst_back = src_back.replace("preprocessed", "processed") if "preprocessed" in src_back else f"{src_back}_processed"
 
-    # Check if dst exists
+    # Check if dst exists, else, delete the folder and create a new one
     if not exists(dst_front):
         os.makedirs(dst_front)
         print(f"Created {dst_front}")
+    else:
+        # Delete previous processed images
+        shutil.rmtree(dst_front)
+        os.makedirs(dst_front)
+        print(f"Deleted previous processed images in {dst_front}")
     if not exists(dst_back):
         os.makedirs(dst_back)
         print(f"Created {dst_back}")
+    else:
+        # Delete previous processed images
+        shutil.rmtree(dst_back)
+        os.makedirs(dst_back)
+        print(f"Deleted previous processed images in {dst_back}")
 
-    if threading:
-        max_threads = 8  # Set the number of threads you want to use
-        print(f"Program running in threaded mode with {max_threads} threads")
+    if threads:
+        print(f"Program running in threaded mode with {max_threads} threads\n")
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
             # Start inference
             futures = []
@@ -171,7 +179,7 @@ def main(threading):
                 except Exception as e:
                     print(f"An error occurred: {e}\n")
     else:
-        print("Program running in non-threaded mode")
+        print("Program running in non-threaded mode\n")
         for ff, fb in zip(files_front, files_back):
             render_data(src_front, src_back, dst_front, dst_back, ff, fb, kupu)
 
@@ -190,7 +198,7 @@ def main(threading):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the inference script.")
-    parser.add_argument("--threading", action="store_true", help="Run the program in threaded mode.")
+    parser.add_argument("--threads", type=int, default=0, help="Number of threads to use.")
     args = parser.parse_args()
 
-    main(args.threading)
+    main(args.threads, max_threads=args.threads if args.threads > 0 and args.threads < 128 else 4)

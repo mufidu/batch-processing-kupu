@@ -1,2 +1,2 @@
-Number of images: 10
-Number of images processed: 10
+Number of images: 9
+Number of images processed: 9

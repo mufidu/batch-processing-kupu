@@ -1,5 +1,5 @@
 =================================================
-Elapsed time without threading: 54.18 seconds
-Elapsed time with threading: 38.91 seconds
-Speedup percentage: 28.18%
+Elapsed time without threading: 46.80 seconds
+Elapsed time with threading: 33.26 seconds
+Speedup percentage: 28.92%
 =================================================

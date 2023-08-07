@@ -47,12 +47,17 @@ def adjust(img, src, i):
             f.write(f"Image error in {i}.jpg\n{e}\n")
 
 def process_images(src):
-    imgs = len([name for name in os.listdir(f'{src}') if name.endswith('.jpg')])
-    print(f"Number of images: {imgs}")
+    # Save all the images names in a list
+    imgs = []
+    for name in os.listdir(f"{src}"):
+        if name.endswith(".jpg"):
+            imgs.append(name)
+            print(f"Image {name} added to the list")
+    print(f"Images' list: {imgs}")
 
-    for i in range(1, imgs + 1):
-        img = cv2.imread(f"{src}/{i}.jpg")
-        adjust(img, src, i)
+    for im in imgs:
+        img = cv2.imread(f"{src}/{im}")
+        adjust(img, src, im[:-4])
 
 print("=================================================")
 print("PREPROCESSING STARTED")
