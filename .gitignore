@@ -5,3 +5,4 @@ __pycache__/
 app.spec
 app.exe
 build/
+models/
