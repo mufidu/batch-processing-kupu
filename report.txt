@@ -1,2 +1,1 @@
-Number of images: 3
-Number of images processed: 3
+3 images processed to ./imgs/wholeBodyANT_processed and ./imgs/wholeBodyPOST_processed

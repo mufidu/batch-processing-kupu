@@ -111,21 +111,19 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
     ax.imshow(X_valid[vl_idx[i]][0].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][0].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_front}/{img_front}")
-    print(f"Saved to {dst_front}/{img_front}")
 
     # Back
     # plt.subplot(2, n*2, (2*i)+2)
     ax.imshow(X_valid[vl_idx[i]][1].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][1].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_back}/{img_back}")
-    print(f"Saved to {dst_back}/{img_back}\n")
 
     # Delete the figure after saving to save memory
     plt.close(fig)
 
 def main(threads, max_threads=4):
     print("=================================================")
-    print("INFERENCING STARTED")
+    print("INFERENCING STARTED\n")
 
     # Load the model
     kupu = BtrflyNet()
@@ -185,16 +183,13 @@ def main(threads, max_threads=4):
 
     # Get the number of files
     num_files = len(files_front)
-    num_files_processed = len(os.listdir(dst_front))
 
     # Write report
+    print("\nINFERENCING DONE")
     print("=================================================")
-    print("INFERENCING DONE")
-    print(f"Number of images: {num_files}")
-    print(f"Number of images processed: {num_files_processed}")
+    print(f"\n{num_files} images processed to {dst_front} and {dst_back}")
     with open("report.txt", "w") as f:
-        f.write(f"Number of images: {num_files}\n")
-        f.write(f"Number of images processed: {num_files_processed}\n")
+        f.write(f"{num_files} images processed to {dst_front} and {dst_back}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the inference script.")
