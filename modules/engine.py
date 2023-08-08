@@ -14,8 +14,12 @@ import shutil
 
 matplotlib.use('Agg')
 
-def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, model, index=0):
-    print(f"Rendering {img_front}...")
+idx = 0
+
+def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, model, num_files, index=0):
+    global idx
+    idx += 1
+    print(f"Rendering {img_front}... ({idx}/{num_files})")
 
     tfms = transforms.Compose([transforms.ToTensor()])
 
@@ -126,15 +130,17 @@ def main(src_front, src_back, threads, max_threads=4):
     print("INFERENCING STARTED\n")
 
     # Load the model
-    kupu = BtrflyNet()
+    # Use GPU if available
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    kupu = BtrflyNet().to(device)
     kupu.load_state_dict(
-        torch.load("models/model-btr0406a.pt", map_location=torch.device("cpu"))
+        torch.load("models/model-eff0406a.pt", map_location=torch.device("cpu"))
     )
     print("Model loaded\n")
 
     # Get the files
-    src_front = f"{src_front}_preprocessed"
-    src_back = f"{src_back}_preprocessed"
+    src_front = f"{src_front}"
+    src_back = f"{src_back}"
     files_front = natsorted(os.listdir(src_front))
     files_back = natsorted(os.listdir(src_back))
 
@@ -162,13 +168,16 @@ def main(src_front, src_back, threads, max_threads=4):
         printed_dst = dst_back.split("/")[-1]
         print(f"Deleted previous processed images in {printed_dst}")
 
+    # Get the number of files
+    num_files = len(files_front)
+
+    # Run the inference
     if threads:
         print(f"Program running in threaded mode with {max_threads} threads\n")
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
-            # Start inference
             futures = []
             for i, (ff, fb) in enumerate(zip(files_front, files_back)):
-                future = executor.submit(render_data, src_front, src_back, dst_front, dst_back, ff, fb, kupu, i)
+                future = executor.submit(render_data, src_front, src_back, dst_front, dst_back, ff, fb, kupu, num_files, i)
                 futures.append(future)
 
             # Wait for all tasks to complete
@@ -181,10 +190,7 @@ def main(src_front, src_back, threads, max_threads=4):
     else:
         print("Program running in non-threaded mode\n")
         for ff, fb in zip(files_front, files_back):
-            render_data(src_front, src_back, dst_front, dst_back, ff, fb, kupu)
-
-    # Get the number of files
-    num_files = len(files_front)
+            render_data(src_front, src_back, dst_front, dst_back, ff, fb, kupu, num_files)
 
     # Write report
     print("\nINFERENCING DONE")

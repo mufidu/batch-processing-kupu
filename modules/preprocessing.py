@@ -140,7 +140,7 @@ def main():
         error_imgs_count = 0
         error_imgs = []
 
-    print(f"Number of images processed: {len(os.listdir(src_front))}")
+    print(f"Number of images processed: {len(os.listdir(f'{src_front}_preprocessed')) + len(os.listdir(f'{src_back}_preprocessed'))}")
     print("PREPROCESSING DONE")
     print("=================================================")
 
