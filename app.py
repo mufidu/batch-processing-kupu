@@ -71,7 +71,7 @@ class ImageProcessingApp:
                     return
 
                 try:
-                    cmd = ["venv/Scripts/python.exe", "preprocessing.py"]
+                    cmd = ["venv/Scripts/python.exe", "modules/preprocessing.py", "--src_front", src_front, "--src_back", src_back]
                     self.run_command(cmd)
                 except Exception as e:
                     self.append_output(f"Preprocessing error: {str(e)}")
@@ -95,7 +95,7 @@ class ImageProcessingApp:
                 num_threads = self.num_threads.get()
 
                 try:
-                    cmd = ["venv/Scripts/python.exe", "engine.py"]
+                    cmd = ["venv/Scripts/python.exe", "modules/engine.py", "--src_front", src_front, "--src_back", src_back]
                     if use_threads:
                         cmd.extend(["--threads", num_threads])
                     self.run_command(cmd)

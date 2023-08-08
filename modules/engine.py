@@ -121,20 +121,20 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
     # Delete the figure after saving to save memory
     plt.close(fig)
 
-def main(threads, max_threads=4):
+def main(src_front, src_back, threads, max_threads=4):
     print("=================================================")
     print("INFERENCING STARTED\n")
 
     # Load the model
     kupu = BtrflyNet()
     kupu.load_state_dict(
-        torch.load("./model-eff0406a.pt", map_location=torch.device("cpu"))
+        torch.load("models/model-eff0406a.pt", map_location=torch.device("cpu"))
     )
     print("Model loaded\n")
 
     # Get the files
-    src_front = "./imgs/wholeBodyANT_preprocessed"
-    src_back = "./imgs/wholeBodyPOST_preprocessed"
+    src_front = f"{src_front}_preprocessed"
+    src_back = f"{src_back}_preprocessed"
     files_front = natsorted(os.listdir(src_front))
     files_back = natsorted(os.listdir(src_back))
 
@@ -150,7 +150,8 @@ def main(threads, max_threads=4):
         # Delete previous processed images
         shutil.rmtree(dst_front)
         os.makedirs(dst_front)
-        print(f"Deleted previous processed images in {dst_front}")
+        printed_dst = dst_front.split("/")[-1]
+        print(f"Deleted previous processed images in {printed_dst}")
     if not exists(dst_back):
         os.makedirs(dst_back)
         print(f"Created {dst_back}")
@@ -158,7 +159,8 @@ def main(threads, max_threads=4):
         # Delete previous processed images
         shutil.rmtree(dst_back)
         os.makedirs(dst_back)
-        print(f"Deleted previous processed images in {dst_back}")
+        printed_dst = dst_back.split("/")[-1]
+        print(f"Deleted previous processed images in {printed_dst}")
 
     if threads:
         print(f"Program running in threaded mode with {max_threads} threads\n")
@@ -188,12 +190,14 @@ def main(threads, max_threads=4):
     print("\nINFERENCING DONE")
     print("=================================================")
     print(f"\n{num_files} images processed to {dst_front} and {dst_back}")
-    with open("report.txt", "w") as f:
+    with open("logs/report.txt", "w") as f:
         f.write(f"{num_files} images processed to {dst_front} and {dst_back}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the inference script.")
     parser.add_argument("--threads", type=int, default=0, help="Number of threads to use.")
+    parser.add_argument("--src_front", required=True, help="Path to source directory for front images.")
+    parser.add_argument("--src_back", required=True, help="Path to source directory for back images.")
     args = parser.parse_args()
 
-    main(args.threads, max_threads=args.threads if args.threads > 0 and args.threads < 128 else 4)
+    main(args.src_front, args.src_back, args.threads, max_threads=args.threads if args.threads > 0 and args.threads < 128 else 4)
