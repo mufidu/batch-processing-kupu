@@ -5,11 +5,10 @@ import shutil
 import argparse
 import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
-from natsort import natsorted
 
-size = (128, 512)
-factor = 3 # based on trial and error 
-threshold = 0.55 # based on trial and error 
+size = (128, 512) # based on model engine
+factor = 3 # based on user (trial and error)
+threshold = 0.55 # based on user (trial and error)
 baseline = cv2.imread("./imgs/baseReferenceANT/indo-011.png")
 
 error_imgs_count = 0
@@ -128,12 +127,15 @@ def main():
 
         dst = f"{srcs[i]}_preprocessed"
         # Create the folder if it doesn't exist
-        if not os.path.exists(f"{dst}"):
-            os.makedirs(f"{dst}")
+        if not os.path.exists(f"{dst}_accepted") and os.path.exists(f"{dst}_rejected"):
+            os.makedirs(f"{dst}_accepted")
+            os.makedirs(f"{dst}_rejected")
         else:
             # Delete previous preprocessed images
-            shutil.rmtree(f"{dst}")
-            os.makedirs(f"{dst}")
+            shutil.rmtree(f"{dst}_accepted")
+            shutil.rmtree(f"{dst}_rejected")
+            os.makedirs(f"{dst}_accepted")
+            os.makedirs(f"{dst}_rejected")
 
         if i == 0:
             print("Preprocessing front images...")
@@ -170,7 +172,8 @@ def main():
         error_imgs_count = 0
         error_imgs = []
 
-    print(f"Number of images processed: {len(os.listdir(f'{src_front}_preprocessed')) + len(os.listdir(f'{src_back}_preprocessed'))}")
+    print(f"Number of accepted images processed: {len(os.listdir(f'{src_front}_preprocessed_accepted')) + len(os.listdir(f'{src_back}_preprocessed_accepted'))}")
+    print(f"Number of rejected images processed: {len(os.listdir(f'{src_front}_preprocessed_rejected')) + len(os.listdir(f'{src_back}_preprocessed_rejected'))}")
     print("PREPROCESSING DONE")
     print("=================================================")
 
