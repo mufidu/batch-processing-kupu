@@ -3,9 +3,14 @@ import cv2
 import os
 import shutil
 import argparse
+import numpy as np
+from skimage.metrics import structural_similarity as compare_ssim
+from natsort import natsorted
 
 size = (128, 512)
-factor = 3
+factor = 3 # based on trial and error 
+threshold = 0.55 # based on trial and error 
+baseline = cv2.imread("./imgs/baseReferenceANT/indo-011.png")
 
 error_imgs_count = 0
 error_imgs = []
@@ -35,10 +40,19 @@ def adjust(img, src, i):
         output = enhancer.enhance(factor)
 
         bit = output.convert("RGB", palette=Image.Palette.ADAPTIVE)
-        bit.save(f"{dst}/{i}.png")
+
+        # convert bit into cv2 format for analysis
+        cv2_bit = cv2.cvtColor(np.array(bit), cv2.COLOR_RGB2BGR)
+        analyzed = analyze(cv2_bit, baseline, threshold)
+
+        if analyzed == 'Accepted':
+            bit.save(f"{dst}_accepted/{i}.png")
+            printed_dst = f"{dst}_accepted"
+        else:
+            bit.save(f"{dst}_rejected/{i}.png")
+            printed_dst = f"{dst}_rejected"
         
         printed_src = src.split("/")[-1]
-        printed_dst = dst.split("/")[-1]
         print(f"Image {i} from {printed_src} saved to {printed_dst}/{i}.png")
 
     except Exception as e:
@@ -50,6 +64,20 @@ def adjust(img, src, i):
         # Write the error to a file
         with open(f"{src}_preprocessed_errors/log/log.txt", "a") as f:
             f.write(f"Image error in {i}.jpg\n{e}\n")
+
+
+def analyze(img, baseline, threshold):
+    # Convert images to grayscale
+    grayscale_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    grayscale_baseline = cv2.cvtColor(baseline, cv2.COLOR_BGR2GRAY)
+    # Calculate structural similarity index
+    ssim_index = compare_ssim(grayscale_image, grayscale_baseline)
+    # Determine whether the image is a full skeleton based on SSIM index
+    if ssim_index >= threshold:
+        return 'Accepted'
+    else:
+        return 'Rejected'
+    
 
 def process_images(src):
     # Save all the images names in a list
@@ -67,6 +95,8 @@ def main():
     global error_imgs 
     global size 
     global factor
+    global threshold
+    global baseline
 
     parser = argparse.ArgumentParser(description="Image preprocessing script")
     parser.add_argument("--src_front", required=True, help="Path to the source folder for front images")

@@ -27,10 +27,11 @@ def gather_compared_image_paths(folder_path):
 
 def main():
     # Load baseline full skeleton image
-    baseline_image = cv2.imread("../kupu_offline/model/img/indo-011.png")
+    baseline_imageANT = cv2.imread("./imgs/baseReferenceANT/indo-011.png")
+    baseline_imagePOST = cv2.imread("./imgs/baseReferencePOST/indo-012.png")
 
     # Load and process compared images
-    compared_folder = "../img/editedWholeBodyANT"
+    compared_folder = "./imgs/wholeBodyPOST_preprocessed"
     threshold = 0.55
 
     compared_image_paths = gather_compared_image_paths(compared_folder)
@@ -40,8 +41,7 @@ def main():
 
     for image_path in compared_image_paths:
         compared_image = cv2.imread(image_path)
-        result = is_full_skeleton(compared_image, baseline_image, threshold)
-        print(f"Image: {image_path}, Result: {result}")
+        result = is_full_skeleton(compared_image, baseline_imagePOST, threshold)
 
         # Extract the filename from the path
         filename = os.path.basename(image_path)
@@ -53,3 +53,4 @@ def main():
 
 if __name__ == "__main__":
     results = main()
+    print(results)
