@@ -95,7 +95,9 @@ class ImageProcessingApp:
                 num_threads = self.num_threads.get()
 
                 try:
-                    cmd = ["venv/Scripts/python.exe", "modules/engine.py", "--src_front", src_front, "--src_back", src_back]
+                    src_front_processing = f"{src_front}_preprocessed"
+                    src_back_processing = f"{src_back}_preprocessed"
+                    cmd = ["venv/Scripts/python.exe", "modules/engine.py", "--src_front", src_front_processing, "--src_back", src_back_processing]
                     if use_threads:
                         cmd.extend(["--threads", num_threads])
                     self.run_command(cmd)

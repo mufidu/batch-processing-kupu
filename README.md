@@ -68,8 +68,15 @@ Before running the scripts, you need to set up a virtual environment and install
 
     ```bash
     # Use provided imgs/wholeBodyANT and imgs/wholeBodyPOST as sample input folders
+    # Preprocessing
     python modules/preprocessing.py --src_front imgs/wholeBodyANT --src_back imgs/wholeBodyPOST
-    python modules/engine.py --src_front imgs/wholeBodyANT --src_back imgs/wholeBodyPOST
+    ```
+    
+    ```bash
+    # Processing
+    python modules/engine.py \
+    --src_front imgs/wholeBodyANT_preprocessed \
+    --src_back imgs/wholeBodyPOST_preprocessed
     ```
 
     Run the scripts with the `--help` flag to see the available options.

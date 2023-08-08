@@ -139,8 +139,8 @@ def main(src_front, src_back, threads, max_threads=4):
     print("Model loaded\n")
 
     # Get the files
-    src_front = f"{src_front}_preprocessed"
-    src_back = f"{src_back}_preprocessed"
+    src_front = f"{src_front}"
+    src_back = f"{src_back}"
     files_front = natsorted(os.listdir(src_front))
     files_back = natsorted(os.listdir(src_back))
 
