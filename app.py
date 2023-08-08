@@ -101,8 +101,14 @@ class ImageProcessingApp:
                     if use_threads:
                         cmd.extend(["--threads", num_threads])
                     self.run_command(cmd)
+
                 except Exception as e:
-                    self.append_output(f"Engine error: {str(e)}")
+                    if str(e) == "argument --threads: invalid int value: ''":
+                        messagebox.showerror("Error", "Please enter a valid number in the threads field.")
+                    elif str(e) == "RuntimeError:":
+                        messagebox.showerror("Error", "The images are not suitable for processing.")
+                    else:
+                        self.append_output(f"Engine error: {str(e)}")
 
             self.engine_thread = threading.Thread(target=run_engine)
             self.engine_thread.start()
