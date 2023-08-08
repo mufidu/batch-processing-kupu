@@ -121,5 +121,6 @@ for src in srcs:
     error_imgs_count = 0
     error_imgs = []
 
-print("=================================================")
+print(f"\nNumber of images processed: {len(os.listdir(src_front))}")
 print("PREPROCESSING DONE")
+print("=================================================")
