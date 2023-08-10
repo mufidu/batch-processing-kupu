@@ -34,7 +34,10 @@ class ImageProcessingApp:
         tk.Button(self.root, text="Select back folder", command=self.browse_src_back).pack()
         tk.Label(self.root, textvariable=self.src_back).pack()
 
-        tk.Label(self.root, text="========").pack()
+        tk.Checkbutton(self.root, text="Use Threads", variable=self.use_threads).pack()
+
+        tk.Label(self.root, text="Number of Threads:").pack()
+        tk.Entry(self.root, textvariable=self.num_threads).pack()
 
         tk.Button(self.root, text="Run Preprocessing", command=self.run_preprocessing_threaded).pack(pady=10)
         tk.Button(self.root, text="Run Processing", command=self.run_engine_threaded).pack(pady=10)
