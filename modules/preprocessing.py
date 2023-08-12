@@ -5,6 +5,7 @@ import shutil
 import argparse
 import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
+from tqdm import tqdm
 
 size = (128, 512) # based on model engine
 factor = 3 # based on user (trial and error)
@@ -45,14 +46,15 @@ def adjust(img, src, i):
         analyzed = analyze(cv2_bit, baseline, threshold)
 
         if analyzed == 'Accepted':
-            bit.save(f"{dst}_accepted/{i}.png")
-            printed_dst = f"{dst}_accepted"
+            bit.save(f"{dst}/{i}.png")
+            # printed_dst = f"{dst}_accepted"
         else:
-            bit.save(f"{dst}_rejected/{i}.png")
-            printed_dst = f"{dst}_rejected"
+            # bit.save(f"{dst}_rejected/{i}.png")
+            # printed_dst = f"{dst}_rejected"
+            pass
         
-        printed_src = src.split("/")[-1]
-        print(f"Image {i} from {printed_src} saved to {printed_dst}/{i}.png")
+        # printed_src = src.split("/")[-1]
+        # print(f"Image {i} from {printed_src} saved to {printed_dst}/{i}.png")
 
     except Exception as e:
         print(f"Image error in {i}\n{e}")
@@ -84,7 +86,7 @@ def process_images(src):
     for name in os.listdir(f"{src}"):
         if name.endswith(".jpg"):
             imgs.append(name)
-    for im in imgs:
+    for im in tqdm(imgs):
         img = cv2.imread(f"{src}/{im}")
         adjust(img, src, im[:-4])
 
@@ -127,15 +129,12 @@ def main():
 
         dst = f"{srcs[i]}_preprocessed"
         # Create the folder if it doesn't exist
-        if not os.path.exists(f"{dst}_accepted") or os.path.exists(f"{dst}_rejected"):
-            os.makedirs(f"{dst}_accepted")
-            os.makedirs(f"{dst}_rejected")
+        if not os.path.exists(f"{dst}"):
+            os.makedirs(f"{dst}")
         else:
             # Delete previous preprocessed images
-            shutil.rmtree(f"{dst}_accepted")
-            shutil.rmtree(f"{dst}_rejected")
-            os.makedirs(f"{dst}_accepted")
-            os.makedirs(f"{dst}_rejected")
+            shutil.rmtree(f"{dst}")
+            os.makedirs(f"{dst}")
 
         if i == 0:
             print("Preprocessing front images...")
@@ -172,8 +171,8 @@ def main():
         error_imgs_count = 0
         error_imgs = []
 
-    print(f"Number of accepted images processed: {len(os.listdir(f'{src_front}_preprocessed_accepted')) + len(os.listdir(f'{src_back}_preprocessed_accepted'))}")
-    print(f"Number of rejected images processed: {len(os.listdir(f'{src_front}_preprocessed_rejected')) + len(os.listdir(f'{src_back}_preprocessed_rejected'))}")
+    print(f"Number of accepted images processed: {len(os.listdir(f'{src_front}_preprocessed')) + len(os.listdir(f'{src_back}_preprocessed'))}")
+    # print(f"Number of rejected images processed: {len(os.listdir(f'{src_front}_preprocessed_rejected')) + len(os.listdir(f'{src_back}_preprocessed_rejected'))}")
     print("PREPROCESSING DONE")
     print("=================================================")
 

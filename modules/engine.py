@@ -1,4 +1,4 @@
-from btreff import BtrflyNet
+from btrfly import BtrflyNet
 from PIL import Image
 from torchvision import transforms
 from os.path import exists
@@ -11,15 +11,17 @@ from natsort import natsorted
 import concurrent.futures
 import argparse
 import shutil
+from tqdm import tqdm
 
 matplotlib.use('Agg')
 
 idx = 0
+tqdm.monitor_interval = 0 
 
 def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, model, num_files, index=0):
     global idx
     idx += 1
-    print(f"Rendering {img_front}... ({idx}/{num_files})")
+    # print(f"Rendering {img_front}... ({idx}/{num_files})")
 
     tfms = transforms.Compose([transforms.ToTensor()])
 
@@ -134,7 +136,7 @@ def main(src_front, src_back, threads, max_threads=4):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     kupu = BtrflyNet().to(device)
     kupu.load_state_dict(
-        torch.load("models/model-eff0406a.pt", map_location=torch.device(device))
+        torch.load("models/model-btr0406a.pt", map_location=torch.device(device))
     )
     print("Model loaded\n")
 
@@ -189,7 +191,7 @@ def main(src_front, src_back, threads, max_threads=4):
                     print(f"An error occurred: {e}\n")
     else:
         print("Program running in non-threaded mode\n")
-        for ff, fb in zip(files_front, files_back):
+        for ff, fb in tqdm(zip(files_front, files_back), total=len(files_front)):
             render_data(src_front, src_back, dst_front, dst_back, ff, fb, kupu, num_files)
 
     # Write report

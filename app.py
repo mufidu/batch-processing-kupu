@@ -11,7 +11,7 @@ env["PYTHONUNBUFFERED"] = "1"
 class ImageProcessingApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Bonescan Segment Batch Processing")
+        self.root.title("Automatic ANT-POST Bone Scan Image Segmentation")
 
         self.src_front = tk.StringVar()
         self.src_back = tk.StringVar()
@@ -28,16 +28,16 @@ class ImageProcessingApp:
 
         tk.Label(self.root, text="Select Source Folders:").pack(pady=10)
 
-        tk.Button(self.root, text="Select front folder", command=self.browse_src_front).pack()
+        tk.Button(self.root, text="Select ANTERIOR folder", command=self.browse_src_front).pack()
         tk.Label(self.root, textvariable=self.src_front).pack()
 
-        tk.Button(self.root, text="Select back folder", command=self.browse_src_back).pack()
+        tk.Button(self.root, text="Select POSTERIOR folder", command=self.browse_src_back).pack()
         tk.Label(self.root, textvariable=self.src_back).pack()
 
         tk.Label(self.root, text="========").pack()
 
         tk.Button(self.root, text="Run Preprocessing", command=self.run_preprocessing_threaded).pack(pady=10)
-        tk.Button(self.root, text="Run Processing", command=self.run_engine_threaded).pack(pady=10)
+        tk.Button(self.root, text="Run Segmentation", command=self.run_engine_threaded).pack(pady=10)
 
         tk.Label(self.root, text="").pack()
         tk.Label(self.root, text="Output:").pack()
@@ -92,8 +92,8 @@ class ImageProcessingApp:
                 num_threads = self.num_threads.get()
 
                 try:
-                    src_front_processing = f"{src_front}_preprocessed_accepted"
-                    src_back_processing = f"{src_back}_preprocessed_accepted"
+                    src_front_processing = f"{src_front}_preprocessed"
+                    src_back_processing = f"{src_back}_preprocessed"
                     cmd = ["venv/Scripts/python.exe", "modules/engine.py", "--src_front", src_front_processing, "--src_back", src_back_processing]
                     if use_threads:
                         cmd.extend(["--threads", num_threads])

@@ -5,4 +5,14 @@ __pycache__/
 app.spec
 app.exe
 build/
+
+# .pt models
 models/
+
+# images
+imgs/wholeBodyANT
+imgs/wholeBodyANT_preprocessed
+imgs/wholeBodyANT_processed
+imgs/wholeBodyPOST
+imgs/wholeBodyPOST_preprocessed
+imgs/wholeBodyPOST_processed

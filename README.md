@@ -1,4 +1,4 @@
-# Bonescan Segment Batch Processing
+# Automatic ANT-POST Bone Scan Image Segmentation
 
 This project provides a tool to preprocess and process medical images of bonescans using Python scripts. It includes functionalities for cropping, resizing, enhancing, and segmenting bone images using the BtrflyNet model.
 

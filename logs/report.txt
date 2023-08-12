@@ -1,1 +1,1 @@
-3 images processed to D:/Telkom University/Magang/Humic/batch-processing-kupu/imgs/wholeBodyANT_processed and D:/Telkom University/Magang/Humic/batch-processing-kupu/imgs/wholeBodyPOST_processed
+99 images processed to D:/Telkom University/Magang/Humic/batch-processing-kupu/imgs/wholeBodyANT_processed and D:/Telkom University/Magang/Humic/batch-processing-kupu/imgs/wholeBodyPOST_processed
