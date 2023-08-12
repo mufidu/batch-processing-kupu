@@ -5,12 +5,12 @@ import os
 python_path = "venv/Scripts/python.exe"
 
 start_time = time.time()
-subprocess.run([python_path, "modules/engine.py", "--threads", "4"])
+subprocess.run([python_path, "modules/engine.py", "--threads", "4", "--src_front", "imgs/wholeBodyANT_preprocessed_accepted", "--src_back", "imgs/wholeBodyPOST_preprocessed_accepted"])
 end_time = time.time()
 threaded_time = end_time - start_time
 
 start_time = time.time()
-subprocess.run([python_path, "modules/engine.py"])
+subprocess.run([python_path, "modules/engine.py", "--src_front", "imgs/wholeBodyANT_preprocessed_accepted", "--src_back", "imgs/wholeBodyPOST_preprocessed_accepted"])
 end_time = time.time()
 non_threaded_time = end_time - start_time
 

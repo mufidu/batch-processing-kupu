@@ -127,7 +127,7 @@ def main():
 
         dst = f"{srcs[i]}_preprocessed"
         # Create the folder if it doesn't exist
-        if not os.path.exists(f"{dst}_accepted") and os.path.exists(f"{dst}_rejected"):
+        if not os.path.exists(f"{dst}_accepted") or os.path.exists(f"{dst}_rejected"):
             os.makedirs(f"{dst}_accepted")
             os.makedirs(f"{dst}_rejected")
         else:
