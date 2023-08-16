@@ -16,6 +16,9 @@ error_imgs_count = 0
 error_imgs = []
 dst = ""
 
+rejected_imgs_count = 0
+rejected_imgs = []
+
 def adjust(img, src, i):
     try:
         # Convert the image to grayscale
@@ -46,15 +49,16 @@ def adjust(img, src, i):
         analyzed = analyze(cv2_bit, baseline, threshold)
 
         if analyzed == 'Accepted':
-            bit.save(f"{dst}/{i}.png")
-            # printed_dst = f"{dst}_accepted"
+            # bit.save(f"{dst}/{i}.png")
+            acc_dst = f"{dst}_accepted"
+            bit.save(f"{acc_dst}/{i}.png")
         else:
-            # bit.save(f"{dst}_rejected/{i}.png")
-            # printed_dst = f"{dst}_rejected"
+            bit.save(f"{dst}_rejected/{i}.png")
+            global rejected_imgs_count
+            rejected_imgs_count += 1
+            rejected_img_name = f"{src}/{i}.jpg"
+            rejected_imgs.append(rejected_img_name)
             pass
-        
-        # printed_src = src.split("/")[-1]
-        # print(f"Image {i} from {printed_src} saved to {printed_dst}/{i}.png")
 
     except Exception as e:
         print(f"Image error in {i}\n{e}")
@@ -128,13 +132,22 @@ def main():
                 f.write("")
 
         dst = f"{srcs[i]}_preprocessed"
+        acc_dst = f"{srcs[i]}_preprocessed_accepted"
         # Create the folder if it doesn't exist
-        if not os.path.exists(f"{dst}"):
-            os.makedirs(f"{dst}")
+        if not os.path.exists(f"{acc_dst}"):
+            os.makedirs(f"{acc_dst}")
         else:
             # Delete previous preprocessed images
-            shutil.rmtree(f"{dst}")
-            os.makedirs(f"{dst}")
+            shutil.rmtree(f"{acc_dst}")
+            os.makedirs(f"{acc_dst}")
+        rej_dst = f"{srcs[i]}_preprocessed_rejected"
+        # Create the folder if it doesn't exist
+        if not os.path.exists(f"{rej_dst}"):
+            os.makedirs(f"{rej_dst}")
+        else:
+            # Delete previous preprocessed images
+            shutil.rmtree(f"{rej_dst}")
+            os.makedirs(f"{rej_dst}")
 
         if i == 0:
             print("Preprocessing front images...")
@@ -171,10 +184,18 @@ def main():
         error_imgs_count = 0
         error_imgs = []
 
-    print(f"Number of accepted images processed: {len(os.listdir(f'{src_front}_preprocessed')) + len(os.listdir(f'{src_back}_preprocessed'))}")
-    # print(f"Number of rejected images processed: {len(os.listdir(f'{src_front}_preprocessed_rejected')) + len(os.listdir(f'{src_back}_preprocessed_rejected'))}")
+    print(f"Number of accepted images processed: {len(os.listdir(f'{src_front}_preprocessed_accepted')) + len(os.listdir(f'{src_back}_preprocessed_accepted'))}")
+    print(f"Number of rejected images processed: {len(rejected_imgs)}")
+    print(f"List of rejected images: {rejected_imgs}")
+    print(f"Rejected images are saved in {src_front}_preprocessed_rejected and {src_back}_preprocessed_rejected")
     print("PREPROCESSING DONE")
     print("=================================================")
+
+    # Delete the rejected preprocessed folder if it is empty
+    if len(os.listdir(f"{src_front}_preprocessed_rejected")) == 0:
+        shutil.rmtree(f"{src_front}_preprocessed_rejected")
+    if len(os.listdir(f"{src_back}_preprocessed_rejected")) == 0:
+        shutil.rmtree(f"{src_back}_preprocessed_rejected")
 
 if __name__ == "__main__":
     main()

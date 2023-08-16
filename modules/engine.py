@@ -1,4 +1,4 @@
-from btrfly import BtrflyNet
+from btreff import BtrflyNet
 from PIL import Image
 from torchvision import transforms
 from os.path import exists
@@ -136,7 +136,7 @@ def main(src_front, src_back, threads, max_threads=4):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     kupu = BtrflyNet().to(device)
     kupu.load_state_dict(
-        torch.load("models/model-btr0406a.pt", map_location=torch.device(device))
+        torch.load("models/model-eff0406a.pt", map_location=torch.device(device))
     )
     print("Model loaded\n")
 
