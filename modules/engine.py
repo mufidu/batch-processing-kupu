@@ -117,15 +117,40 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
     # ax.imshow(X_valid[vl_idx[i]][0].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][0].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_front}/{img_front}")
+    # Resize image
+    resize_image(f"{dst_front}/{img_front}")
 
     # Back
     # plt.subplot(2, n*2, (2*i)+2)
     # ax.imshow(X_valid[vl_idx[i]][1].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][1].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_back}/{img_back}")
+    # Resize image
+    resize_image(f"{dst_back}/{img_back}")
 
     # Delete the figure after saving to save memory
     plt.close(fig)
+
+def resize_image(image_path, new_width=128, new_height=512):
+    img = Image.open(image_path)
+    width, height = img.size
+    aspect_ratio = width / height
+
+    new_aspect_ratio = new_width / new_height
+    if aspect_ratio > new_aspect_ratio:
+        # Crop width
+        new_width_temp = int(new_height * aspect_ratio)
+        img = img.resize((new_width_temp, new_height))
+        left = (new_width_temp - new_width) / 2
+        img = img.crop((left, 0, left + new_width, new_height))
+    else:
+        # Crop height
+        new_height_temp = int(new_width / aspect_ratio)
+        img = img.resize((new_width, new_height_temp))
+        top = (new_height_temp - new_height) / 2
+        img = img.crop((0, top, new_width, top + new_height))
+
+    img.save(image_path)
 
 def main(src_front, src_back, threads, max_threads=4):
     print("=================================================")
