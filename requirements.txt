@@ -1,3 +1,4 @@
+altgraph==0.17.4
 certifi==2023.7.22
 charset-normalizer==3.2.0
 colorama==0.4.6
@@ -19,10 +20,14 @@ networkx==3.1
 numpy==1.25.2
 opencv-python==4.8.0.76
 packaging==23.1
+pefile==2023.2.7
 Pillow==10.0.0
+pyinstaller==6.2.0
+pyinstaller-hooks-contrib==2023.10
 pyparsing==3.0.9
 python-dateutil==2.8.2
 PyWavelets==1.4.1
+pywin32-ctypes==0.2.2
 requests==2.31.0
 scikit-image==0.21.0
 scipy==1.11.1

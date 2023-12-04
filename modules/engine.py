@@ -114,13 +114,13 @@ def render_data(src_front, src_back, dst_front, dst_back, img_front, img_back, m
 
     # Front
     # plt.subplot(2, n*2, (2*i)+1)
-    ax.imshow(X_valid[vl_idx[i]][0].permute(1, 2, 0))
+    # ax.imshow(X_valid[vl_idx[i]][0].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][0].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_front}/{img_front}")
 
     # Back
     # plt.subplot(2, n*2, (2*i)+2)
-    ax.imshow(X_valid[vl_idx[i]][1].permute(1, 2, 0))
+    # ax.imshow(X_valid[vl_idx[i]][1].permute(1, 2, 0))
     ax.imshow(map_clr(y_predv[vl_idx[i]][1].argmax(axis=0).numpy()), alpha=0.5)
     plt.savefig(f"{dst_back}/{img_back}")
 
